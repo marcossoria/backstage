@@ -1,0 +1,29 @@
+# Despliegue de esta app como la opción Docker del TP.
+# La VM ejecuta Apache + PostgreSQL + Docker.
+# El puerto de la aplicación queda accesible SOLO por el Apache de la VM.
+services:
+  musicos:
+    build:
+      context: .
+      args:
+        HTTP_PROXY: ${HTTP_PROXY:-}
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
+        NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1}
+    image: so2/tpn4-musicos:2026
+    ports:
+      - "127.0.0.1:${APP_PORT:-5000}:8000"
+    environment:
+      DB_HOST: ${DB_HOST:?Editar DB_HOST en .env con la IP de la VM Debian}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME:-musicos_bandas}
+      DB_USER: ${DB_USER:-app_musicos}
+      DB_PASSWORD: ${DB_PASSWORD:?Configurar DB_PASSWORD en .env}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - app_net
+networks:
+  app_net:
+    name: so2_tpn4_musicos_net
+    driver: bridge
