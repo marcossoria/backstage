@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c0b19">
+  <meta name="description" content="Explorador de músicos y bandas. Trabajo práctico de Sistemas Operativos II.">
+  <title>Backstage | Músicos y bandas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+  <div class="site-shell container-xl">
+    <header class="site-header d-flex justify-content-between align-items-center">
+      <div class="brand d-flex align-items-center gap-3">
+        <span class="brand-logo" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <div><div class="brand-name">BACKSTAGE<span class="brand-dot">.</span></div><div class="brand-subtitle">MUSIC ARCHIVE</div></div>
+      </div>
+      <div class="header-right d-flex align-items-center gap-3">
+        <span class="edition d-none d-sm-inline">EDICIÓN 2026</span>
+        <span class="header-status"><span class="status-dot"></span> EN VIVO</span>
+      </div>
+    </header>
+
+    <main class="row g-4 align-items-stretch hero-layout">
+      <section class="col-lg-6 hero-column">
+        <div class="eyebrow"><span class="eyebrow-line"></span> SISTEMAS OPERATIVOS II / TPN° 4</div>
+        <h1>La música<br>tiene <em>historia.</em></h1>
+        <p class="hero-description">Detrás de cada canción hay personas, instrumentos y bandas que dejaron su marca. Explorá nuestra pequeña colección de artistas.</p>
+
+        <div class="genre-tags" aria-label="Bandas incluidas en la colección">
+          <span>Pink Floyd</span><span>Porcupine Tree</span><span>Queen</span>
+        </div>
+
+        <div class="visual-stage" aria-hidden="true">
+          <div class="record-glow"></div>
+          <div class="record"><div class="record-label"><div class="record-label-inner"><span>BACK</span><span>STAGE</span><small>45 RPM</small></div></div></div>
+          <div class="sound-card"><div class="sound-icon">♫</div><div><strong>Una colección,</strong><span>infinitas historias.</span></div></div>
+          <div class="vertical-note">SIDE A · MUSICIANS COLLECTION</div>
+        </div>
+      </section>
+
+      <section class="col-lg-6 app-column" aria-label="Explorador de músicos">
+        <div class="explorer-panel">
+          <div class="panel-top d-flex justify-content-between align-items-start">
+            <div><span class="panel-kicker">EXPLORADOR INTERACTIVO</span><h2>Conocé a los artistas<span>.</span></h2></div>
+            <span class="panel-number">01 / 02</span>
+          </div>
+          <label for="musico-select" class="field-label">ELEGÍ UN MÚSICO</label>
+          <div class="select-wrap">
+            <select id="musico-select" data-api-base="{{ url_for('inicio') }}api/musicos/" class="form-select artist-select" {% if not db_disponible or not musicos %}disabled{% endif %}>
+              <option value="">Seleccioná un artista...</option>
+              {% for musico in musicos %}
+              <option value="{{ musico.id_musico }}">{{ musico.nombre_completo }}</option>
+              {% endfor %}
+            </select>
+            <span class="select-marker" aria-hidden="true">♫</span>
+          </div>
+
+          {% if not db_disponible %}
+          <div class="db-alert" role="alert">No se pudo conectar con PostgreSQL. Verificá que el servicio esté disponible y actualizá esta página.</div>
+          {% elif not musicos %}
+          <div class="db-alert" role="status">La base de datos no devolvió músicos.</div>
+          {% endif %}
+
+          <div class="artist-card" id="artist-card" aria-live="polite">
+            <div class="card-overline d-flex justify-content-between align-items-center"><span>PERFIL DEL ARTISTA</span><span class="card-signal" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
+            <div class="artist-identity d-flex align-items-center gap-3">
+              <div class="artist-avatar" id="artist-avatar" aria-hidden="true">♪</div>
+              <div class="identity-info"><span class="identity-caption">ARTISTA SELECCIONADO</span><h3 id="artist-name">Sin seleccionar</h3><span class="identity-hint" id="artist-hint">Elegí un nombre para explorar</span></div>
+            </div>
+            <div class="detail-grid">
+              <div class="detail-item"><div class="detail-label"><span aria-hidden="true">◆</span> BANDA</div><div class="detail-value" id="artist-band">—</div></div>
+              <div class="detail-item"><div class="detail-label"><span aria-hidden="true">♫</span> INSTRUMENTO</div><div class="detail-value" id="artist-instrument">—</div></div>
+            </div>
+            <div class="card-footerline d-flex align-items-center justify-content-between"><span><span class="tiny-dot"></span> DATOS EN POSTGRESQL</span><span id="query-state" role="status">LISTO PARA EXPLORAR</span></div>
+          </div>
+
+          <p class="panel-help" id="panel-help">La información se recupera en tiempo real desde la base de datos mediante Flask.</p>
+          <div class="stack-line d-flex justify-content-center align-items-center flex-wrap gap-2"><span>FLASK</span><b>+</b><span>POSTGRESQL</span><b>+</b><span>LINUX</span></div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer d-flex flex-wrap gap-2 justify-content-between"><span>© 2026 · Sistemas Operativos II</span><span>Ingeniería en Informática <span class="footer-sep">/</span> Proyecto académico</span></footer>
+  </div>
+</body>
+</html>
